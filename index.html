@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Entspannungs-Aktivitäten</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6f9;
+            text-align: center;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #activity {
+            margin: 20px 0;
+            font-size: 22px;
+            font-weight: bold;
+            color: #4a6fa5;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #4a6fa5;
+            color: white;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #3a5a85;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>✨ Entspannungs-Ideen ✨</h1>
+
+    <div id="activity">Klicke auf den Button 🌿</div>
+
+    <button onclick="showRandomActivity()">Zufällige Aktivität</button>
+
+    <br><br>
+
+    <input type="text" id="newActivity" placeholder="Neue Aktivität eingeben">
+    <button onclick="addActivity()">Hinzufügen</button>
+
+    <script>
+        let activities = [
+            "Zeichnen",
+            "Einen Charakter erstellen",
+            "Eine Szene malen",
+            "Workout machen",
+            "Einen Smoothie zubereiten",
+            "Musik hören",
+            "Spazieren gehen",
+            "Meditieren"
+        ];
+
+        function showRandomActivity() {
+            let randomIndex = Math.floor(Math.random() * activities.length);
+            document.getElementById("activity").innerText = activities[randomIndex];
+        }
+
+        function addActivity() {
+            let input = document.getElementById("newActivity");
+            let newActivity = input.value.trim();
+
+            if (newActivity !== "") {
+                activities.push(newActivity);
+                input.value = "";
+                alert("Aktivität hinzugefügt 🌸");
+            }
+        }
+    </script>
+
+</body>
+</html>
