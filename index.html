@@ -2,35 +2,41 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Entspannungs-Aktivitäten</title>
+    <title>Relax & Schule</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background: #f3f6f9;
-            text-align: center;
-            padding: 40px;
+            padding: 30px;
         }
 
         h1 {
-            color: #333;
+            text-align: center;
         }
 
-        #activity {
-            margin: 20px 0;
-            font-size: 22px;
-            font-weight: bold;
-            color: #4a6fa5;
+        .container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 350px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         button {
-            padding: 12px 20px;
-            font-size: 16px;
-            cursor: pointer;
+            padding: 10px 16px;
             border: none;
             border-radius: 8px;
             background-color: #4a6fa5;
             color: white;
-            margin: 10px;
+            cursor: pointer;
+            margin-top: 10px;
         }
 
         button:hover {
@@ -39,54 +45,111 @@
 
         input {
             padding: 10px;
-            font-size: 16px;
-            width: 250px;
+            width: 90%;
             border-radius: 6px;
             border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+
+        #activity {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #4a6fa5;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 8px 0;
         }
     </style>
 </head>
 <body>
 
-    <h1>✨ Entspannungs-Ideen ✨</h1>
+<h1>🌿 Relax & 📚 Schule</h1>
 
-    <div id="activity">Klicke auf den Button 🌿</div>
+<div class="container">
 
-    <button onclick="showRandomActivity()">Zufällige Aktivität</button>
+    <!-- ENTSPANNUNG -->
+    <div class="box">
+        <h2>Entspannungs-Aktivitäten</h2>
 
-    <br><br>
+        <div id="activity">Klick auf den Button ✨</div>
 
-    <input type="text" id="newActivity" placeholder="Neue Aktivität eingeben">
-    <button onclick="addActivity()">Hinzufügen</button>
+        <button onclick="showRandomActivity()">Zufällige Aktivität</button>
 
-    <script>
-        let activities = [
-            "Zeichnen",
-            "Einen Charakter erstellen",
-            "Eine Szene malen",
-            "Workout machen",
-            "Einen Smoothie zubereiten",
-            "Musik hören",
-            "Spazieren gehen",
-            "Meditieren"
-        ];
+        <input type="text" id="newActivity" placeholder="Neue Aktivität hinzufügen">
+        <button onclick="addActivity()">Hinzufügen</button>
+    </div>
 
-        function showRandomActivity() {
-            let randomIndex = Math.floor(Math.random() * activities.length);
-            document.getElementById("activity").innerText = activities[randomIndex];
+    <!-- SCHULE -->
+    <div class="box">
+        <h2>Schulkram ✅</h2>
+
+        <input type="text" id="newTodo" placeholder="Hausaufgabe / To-Do">
+        <button onclick="addTodo()">Hinzufügen</button>
+
+        <ul id="todoList"></ul>
+    </div>
+
+</div>
+
+<script>
+    // ENTSPANNUNG
+    let activities = [
+        "Zeichnen",
+        "Einen Charakter erstellen",
+        "Eine Szene malen",
+        "Workout machen",
+        "Einen Smoothie zubereiten",
+        "Musik hören",
+        "Spazieren gehen",
+        "Meditieren"
+    ];
+
+    function showRandomActivity() {
+        let randomIndex = Math.floor(Math.random() * activities.length);
+        document.getElementById("activity").innerText = activities[randomIndex];
+    }
+
+    function addActivity() {
+        let input = document.getElementById("newActivity");
+        let value = input.value.trim();
+
+        if (value !== "") {
+            activities.push(value);
+            input.value = "";
+            alert("Aktivität hinzugefügt 🌸");
         }
+    }
 
-        function addActivity() {
-            let input = document.getElementById("newActivity");
-            let newActivity = input.value.trim();
+    // SCHULE / CHECKLISTE
+    function addTodo() {
+        let input = document.getElementById("newTodo");
+        let value = input.value.trim();
 
-            if (newActivity !== "") {
-                activities.push(newActivity);
-                input.value = "";
-                alert("Aktivität hinzugefügt 🌸");
-            }
+        if (value !== "") {
+            let li = document.createElement("li");
+
+            let checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+
+            checkbox.onchange = function() {
+                li.remove(); // Aufgabe verschwindet
+            };
+
+            li.appendChild(checkbox);
+            li.append(" " + value);
+
+            document.getElementById("todoList").appendChild(li);
+            input.value = "";
         }
-    </script>
+    }
+</script>
 
 </body>
 </html>
