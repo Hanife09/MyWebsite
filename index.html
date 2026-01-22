@@ -29,33 +29,22 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
+        input[type="text"] {
+            padding: 8px;
+            width: 90%;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-top: 8px;
+        }
+
         button {
-            padding: 10px 16px;
+            padding: 8px 14px;
             border: none;
             border-radius: 8px;
             background-color: #4a6fa5;
             color: white;
             cursor: pointer;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #3a5a85;
-        }
-
-        input {
-            padding: 10px;
-            width: 90%;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            margin-top: 10px;
-        }
-
-        #activity {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 15px 0;
-            color: #4a6fa5;
+            margin-top: 8px;
         }
 
         ul {
@@ -64,7 +53,10 @@
         }
 
         li {
-            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
         }
     </style>
 </head>
@@ -79,11 +71,12 @@
         <h2>Entspannungs-Aktivitäten</h2>
 
         <div id="activity">Klick auf den Button ✨</div>
-
         <button onclick="showRandomActivity()">Zufällige Aktivität</button>
 
-        <input type="text" id="newActivity" placeholder="Neue Aktivität hinzufügen">
+        <input type="text" id="newActivity" placeholder="Neue Aktivität">
         <button onclick="addActivity()">Hinzufügen</button>
+
+        <ul id="activityList"></ul>
     </div>
 
     <!-- SCHULE -->
@@ -99,57 +92,103 @@
 </div>
 
 <script>
-    // ENTSPANNUNG
-    let activities = [
+    // ---------- ENTSPANNUNG ----------
+    let activities = JSON.parse(localStorage.getItem("activities")) || [
         "Zeichnen",
         "Einen Charakter erstellen",
-        "Eine Szene malen",
-        "Workout machen",
-        "Einen Smoothie zubereiten",
-        "Musik hören",
-        "Spazieren gehen",
-        "Meditieren"
+        "Workout",
+        "Smoothie machen"
     ];
 
+    function saveActivities() {
+        localStorage.setItem("activities", JSON.stringify(activities));
+    }
+
     function showRandomActivity() {
-        let randomIndex = Math.floor(Math.random() * activities.length);
-        document.getElementById("activity").innerText = activities[randomIndex];
+        let i = Math.floor(Math.random() * activities.length);
+        document.getElementById("activity").innerText = activities[i];
+    }
+
+    function renderActivities() {
+        let list = document.getElementById("activityList");
+        list.innerHTML = "";
+
+        activities.forEach((a, index) => {
+            let li = document.createElement("li");
+            li.textContent = a;
+
+            let del = document.createElement("button");
+            del.textContent = "✖";
+            del.onclick = () => {
+                activities.splice(index, 1);
+                saveActivities();
+                renderActivities();
+            };
+
+            li.appendChild(del);
+            list.appendChild(li);
+        });
     }
 
     function addActivity() {
         let input = document.getElementById("newActivity");
-        let value = input.value.trim();
-
-        if (value !== "") {
-            activities.push(value);
+        if (input.value.trim() !== "") {
+            activities.push(input.value.trim());
+            saveActivities();
+            renderActivities();
             input.value = "";
-            alert("Aktivität hinzugefügt 🌸");
         }
     }
 
-    // SCHULE / CHECKLISTE
-    function addTodo() {
-        let input = document.getElementById("newTodo");
-        let value = input.value.trim();
+    // ---------- SCHULE ----------
+    let todos = JSON.parse(localStorage.getItem("todos")) || [];
 
-        if (value !== "") {
+    function saveTodos() {
+        localStorage.setItem("todos", JSON.stringify(todos));
+    }
+
+    function renderTodos() {
+        let list = document.getElementById("todoList");
+        list.innerHTML = "";
+
+        todos.forEach((todo, index) => {
             let li = document.createElement("li");
 
             let checkbox = document.createElement("input");
             checkbox.type = "checkbox";
 
-            checkbox.onchange = function() {
-                li.remove(); // Aufgabe verschwindet
+            checkbox.onchange = () => {
+                todos.splice(index, 1);
+                saveTodos();
+                renderTodos();
             };
 
-            li.appendChild(checkbox);
-            li.append(" " + value);
+            let text = document.createElement("span");
+            text.textContent = todo;
 
-            document.getElementById("todoList").appendChild(li);
+            li.appendChild(checkbox); // ✔️ GANZ AM ANFANG
+            li.appendChild(text);
+
+            list.appendChild(li);
+        });
+    }
+
+    function addTodo() {
+        let input = document.getElementById("newTodo");
+        if (input.value.trim() !== "") {
+            todos.push(input.value.trim());
+            saveTodos();
+            renderTodos();
             input.value = "";
         }
     }
+
+    // ---------- START ----------
+    renderActivities();
+    renderTodos();
 </script>
 
 </body>
 </html>
+
+
