@@ -3,25 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <title>Relax & Schule</title>
-
 <style>
 body {
     font-family: Arial, sans-serif;
     background: #f3f6f9;
     padding: 30px;
 }
-
 h1 {
     text-align: center;
 }
-
 .container {
     display: flex;
     gap: 40px;
     justify-content: center;
     flex-wrap: wrap;
 }
-
 .box {
     background: white;
     padding: 20px;
@@ -29,7 +25,6 @@ h1 {
     width: 360px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-
 input[type="text"] {
     padding: 8px;
     width: 90%;
@@ -37,7 +32,6 @@ input[type="text"] {
     border: 1px solid #ccc;
     margin-top: 8px;
 }
-
 button {
     padding: 8px 14px;
     border: none;
@@ -47,16 +41,13 @@ button {
     cursor: pointer;
     margin-top: 8px;
 }
-
 button:hover {
     background-color: #3a5a85;
 }
-
 ul {
     list-style: none;
     padding: 0;
 }
-
 li {
     display: flex;
     align-items: center;
@@ -64,8 +55,6 @@ li {
     margin: 6px 0;
     cursor: pointer;
 }
-
-/* 🌟 SCHÖNE AUSGABE */
 #activityDisplay {
     margin: 20px 0;
     padding: 25px;
@@ -77,165 +66,137 @@ li {
     color: #2f4f7f;
     animation: pop 0.4s ease;
 }
-
-/* ✨ MINI ANIMATION */
 @keyframes pop {
     0% { transform: scale(0.9); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
 }
-
-/* 🗑️ Aktivitätsliste */
 .activity-item {
     padding: 6px 10px;
     border-radius: 6px;
 }
-
 .activity-item:hover {
     background-color: #ffe5e5;
 }
 </style>
 </head>
-
 <body>
-
 <h1>🌿 Relax & 📚 Schule</h1>
-
 <div class="container">
-
-<!-- 🌿 ENTSPANNUNG -->
-<div class="box">
-    <h2>Entspannungs-Aktivitäten</h2>
-
-    <div id="activityDisplay">Klick auf den Button ✨</div>
-    <button on-click="showRandomActivity()">Zufällige Aktivität</button>
-
-    <input type="text" id="newActivity" placeholder="Neue Aktivität">
-    <button on-click="addActivity()">Hinzufügen</button>
-
-    <h3>Alle Aktivitäten (anklicken = löschen)</h3>
-    <ul id="activityList"></ul>
+    <!-- ENTSPANNUNG -->
+    <div class="box">
+        <h2>Entspannungs-Aktivitäten</h2>
+        <div>
+            <div id="activity">Klick auf den Button ✨</div>
+            <button onclick="showRandomActivity()">Zufällige Aktivität</button>
+        </div>
+        <div id="activityDisplay">Klick auf den Button ✨</div>
+        <input type="text" id="newActivity" placeholder="Neue Aktivität">
+        <button onclick="addActivity()">Hinzufügen</button>
+        <h3>Alle Aktivitäten (anklicken = löschen)</h3>
+        <ul id="activityList"></ul>
+    </div>
+    <!-- SCHULE -->
+    <div class="box">
+        <h2>Schulkram ✅</h2>
+        <input type="text" id="newTodo" placeholder="Hausaufgabe / To-Do">
+        <button onclick="addTodo()">Hinzufügen</button>
+        <h3>To-Do Liste</h3>
+        <ul id="todoList"></ul>
+    </div>
 </div>
-
-<!-- 📚 SCHULE -->
-<div class="box">
-    <h2>Schulkram ✅</h2>
-
-    <input type="text" id="newTodo" placeholder="Hausaufgabe / To-Do">
-    <button on-click="addTodo()">Hinzufügen</button>
-
-    <ul id="todoList"></ul>
-</div>
-
-</div>
-
 <script>
-// ---------- 🌿 ENTSPANNUNG ----------
-let activities = JSON.parse(localStorage.getItem("activities")) || [
-    "Zeichnen",
-    "Einen Charakter erstellen",
-    "Eine Szene malen",
-    "Workout",
-    "Smoothie machen"
-];
+    // Entspannungsaktivitäten
+    let activities = JSON.parse(localStorage.getItem("activities")) || [
+        "Zeichnen",
+        "Einen Charakter erstellen",
+        "Workout",
+        "Smoothie machen"
+    ];
 
-function saveActivities() {
-    localStorage.setItem("activities", JSON.stringify(activities));
-}
+    function saveActivities() {
+        localStorage.setItem("activities", JSON.stringify(activities));
+    }
 
-function showRandomActivity() {
-    if (activities.length === 0) return;
+    function showRandomActivity() {
+        if (activities.length === 0) {
+            document.getElementById("activityDisplay").innerText = "Keine Aktivitäten vorhanden.";
+            return;
+        }
+        let i = Math.floor(Math.random() * activities.length);
+        const box = document.getElementById("activityDisplay");
+        box.style.animation = "none";
+        box.offsetHeight; // trigger reflow
+        box.style.animation = "pop 0.4s ease";
+        box.innerText = activities[i];
+    }
 
-    let i = Math.floor(Math.random() * activities.length);
-    let box = document.getElementById("activityDisplay");
+    function renderActivities() {
+        const list = document.getElementById("activityList");
+        list.innerHTML = "";
+        activities.forEach((a, index) => {
+            const li = document.createElement("li");
+            li.textContent = a;
+            li.onclick = () => {
+                activities.splice(index, 1);
+                saveActivities();
+                renderActivities();
+            };
+            list.appendChild(li);
+        });
+    }
 
-    box.style.animation = "none";
-    box.offsetHeight; // reset animation
-    box.style.animation = "pop 0.4s ease";
-
-    box.innerText = activities[i];
-}
-
-function renderActivities() {
-    let list = document.getElementById("activityList");
-    list.innerHTML = "";
-
-    activities.forEach((act, index) => {
-        let li = document.createElement("li");
-        li.textContent = act;
-        li.className = "activity-item";
-
-        li.onclick = () => {
-            activities.splice(index, 1);
+    function addActivity() {
+        const input = document.getElementById("newActivity");
+        const value = input.value.trim();
+        if (value !== "") {
+            activities.push(value);
             saveActivities();
             renderActivities();
-        };
-
-        list.appendChild(li);
-    });
-}
-
-function addActivity() {
-    let input = document.getElementById("newActivity");
-    let value = input.value.trim();
-
-    if (value !== "") {
-        activities.push(value);
-        saveActivities();
-        renderActivities();
-        input.value = "";
+            input.value = "";
+        }
     }
-}
 
-// ---------- 📚 SCHULE ----------
-let todos = JSON.parse(localStorage.getItem("todos")) || [];
+    // To-Do Liste
+    let todos = JSON.parse(localStorage.getItem("todos")) || [];
 
-function saveTodos() {
-    localStorage.setItem("todos", JSON.stringify(todos));
-}
+    function saveTodos() {
+        localStorage.setItem("todos", JSON.stringify(todos));
+    }
 
-function renderTodos() {
-    let list = document.getElementById("todoList");
-    list.innerHTML = "";
+    function renderTodos() {
+        const list = document.getElementById("todoList");
+        list.innerHTML = "";
+        todos.forEach((todo, index) => {
+            const li = document.createElement("li");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.onclick = () => {
+                todos.splice(index, 1);
+                saveTodos();
+                renderTodos();
+            };
+            const span = document.createElement("span");
+            span.textContent = todo;
+            li.appendChild(checkbox);
+            li.appendChild(span);
+            list.appendChild(li);
+        });
+    }
 
-    todos.forEach((todo, index) => {
-        let li = document.createElement("li");
-
-        let checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-
-        checkbox.onchange = () => {
-            todos.splice(index, 1);
+    function addTodo() {
+        const input = document.getElementById("newTodo");
+        const value = input.value.trim();
+        if (value !== "") {
+            todos.push(value);
             saveTodos();
             renderTodos();
-        };
-
-        let text = document.createElement("span");
-        text.textContent = todo;
-
-        li.appendChild(checkbox);
-        li.appendChild(text);
-        list.appendChild(li);
-    });
-}
-
-function addTodo() {
-    let input = document.getElementById("newTodo");
-    let value = input.value.trim();
-
-    if (value !== "") {
-        todos.push(value);
-        saveTodos();
-        renderTodos();
-        input.value = "";
+            input.value = "";
+        }
     }
-}
 
-// ---------- START ----------
-renderActivities();
-renderTodos();
+    // Initialisierung
+    renderActivities();
+    renderTodos();
 </script>
-
 </body>
 </html>
-
-
