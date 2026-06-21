@@ -77,14 +77,71 @@ li {
 .activity-item:hover {
     background-color: #ffe5e5;
 }
+
+/* Ab hier der Darkmode */
+/* Dark Mode */
+.dark-mode {
+    background: #1e1e1e;
+    color: #f1f1f1;
+}
+
+.dark-mode .box {
+    background: #2c2c2c;
+    color: #fff;
+}
+
+.dark-mode input {
+    background: #3a3a3a;
+    color: white;
+    border: 1px solid #555;
+}
+
+.dark-mode button {
+    background-color: #6b8cff;
+}
+
+.dark-mode button:hover {
+    background-color: #5674d1;
+}
+
+.dark-mode #activityDisplay {
+    background: linear-gradient(135deg, #2a3b5f, #1e2a45);
+    color: #dce6ff;
+}
+
+/* Toggle Button */
+#themeToggle {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.dark-mode #themeToggle {
+    background: #eee;
+    color: #222;
+}
+/* Ende Darkmode */
+
 </style>
 </head>
 <body>
-<h1>🌿 Relax & 📚 Schule</h1>
+    <!-- Erstellt von Hanife, 10d, LMG, Düsseldorf, 21.06.2026 -->
+    <button id="themeToggle" onclick="toggleTheme()">🌙</button>
+<h1>🌿 Relax & 📚 Schule by Hanife</h1>
+   
+    <!-- <img src=“css/lmglogo.jpg“ height="100" width="200">  asafdsdf -->
 <div class="container">
     <!-- ENTSPANNUNG -->
     <div class="box">
         <h2>Entspannungs-Aktivitäten</h2>
+         
         <div>
             <div id="activity">Klick auf den Button ✨</div>
             <button onclick="showRandomActivity()">Zufällige Aktivität</button>
@@ -103,6 +160,7 @@ li {
         <h3>To-Do Liste</h3>
         <ul id="todoList"></ul>
     </div>
+    
 </div>
 <script>
     // Entspannungsaktivitäten
@@ -193,10 +251,43 @@ li {
             input.value = "";
         }
     }
+	// Darkmode Bereich
+		// Darkmode Bereich
+function toggleTheme() {
+    document.body.classList.toggle("dark-mode");
 
-    // Initialisierung
+    const btn = document.getElementById("themeToggle");
+
+    if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("theme", "dark");
+        btn.innerText = "☀️";
+    } else {
+        localStorage.setItem("theme", "light");
+        btn.innerText = "🌙";
+    }
+}
+
+// gespeicherten Modus laden
+window.onload = function () {
+    const savedTheme = localStorage.getItem("theme");
+    const btn = document.getElementById("themeToggle");
+
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+        btn.innerText = "☀️";
+    } else {
+        btn.innerText = "🌙";
+    }
+
     renderActivities();
     renderTodos();
+};
+// Ende Darkmode
+// Ende Darkmode
+
+    // Initialisierung
+   
+	
 </script>
 </body>
 </html>
