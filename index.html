@@ -127,14 +127,36 @@ li {
     background: #eee;
     color: #222;
 }
+    
+#languageSelect {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    padding: 6px;
+    border-radius: 8px;
+}    
 /* Ende Darkmode */
+ /* Sprachwähler Anfang*/   
 
 </style>
 </head>
 <body>
     <!-- Erstellt von Hanife, 10d, LMG, Düsseldorf, 21.06.2026 -->
     <button id="themeToggle" onclick="toggleTheme()">🌙</button>
-<h1>🌿 Relax & 📚 Schule by Hanife</h1>
+  <!--  
+<div style="position:fixed; top:15px; left:15px; z-index:1000;">
+    <button onclick="setLanguage('de')">DE</button>
+    <button onclick="setLanguage('en')">EN</button>
+    <button onclick="setLanguage('tr')">TR</button>
+</div>
+    -->
+    <select id="languageSelect" onchange="changeLanguage()">
+    <option value="de">Deutsch</option>
+    <option value="en">English</option>
+    <option value="tr">Türkçe</option>
+</select> 
+    
+<h1 id="title">🌿 Relax & 📚 Schule by Hanife</h1>
     
  <div style="text-align: center;">  
    <img src="https://image.jimcdn.com/app/cms/image/transf/dimension=376x10000:format=png/path/s0e830d437747bf20/image/i63a071aac42ca8b5/version/1489070462/image.png" alt="Logo">
@@ -143,29 +165,97 @@ li {
 <div class="container">
     <!-- ENTSPANNUNG -->
     <div class="box">
-        <h2>Entspannungs-Aktivitäten</h2>
+        <h2 id="relaxTitle">Entspannungs-Aktivitäten</h2>
          
         <div>
             <div id="activity">Klick auf den Button ✨</div>
-            <button onclick="showRandomActivity()">Zufällige Aktivität</button>
+           <button id="randomBtn" onclick="showRandomActivity()">Zufällige Aktivität</button>
+
         </div>
         <div id="activityDisplay">Klick auf den Button ✨</div>
         <input type="text" id="newActivity" placeholder="Neue Aktivität">
-        <button onclick="addActivity()">Hinzufügen</button>
-        <h3>Alle Aktivitäten (anklicken = löschen)</h3>
+        <button id="addActivityBtn" onclick="addActivity()">Hinzufügen</button>
+        <h3 id="allActivities">Alle Aktivitäten (anklicken = löschen)</h3>
         <ul id="activityList"></ul>
     </div>
     <!-- SCHULE -->
     <div class="box">
-        <h2>Schulkram ✅</h2>
+        <h2 id="schoolTitle">Schulkram ✅</h2>
         <input type="text" id="newTodo" placeholder="Hausaufgabe / To-Do">
-        <button onclick="addTodo()">Hinzufügen</button>
-        <h3>To-Do Liste</h3>
+        <button id="addTodoBtn" onclick="addTodo()">Hinzufügen</button>
+        <h3 id="todoTitle">To-Do Liste</h3>
         <ul id="todoList"></ul>
     </div>
     
 </div>
 <script>
+    const translations = {
+    de: {
+        title: "🌿 Relax & 📚 Schule by Hanife",
+    
+        activity: "Klick auf den Button",
+        relaxTitle: "Entspannungs-Aktivitäten",
+        randomBtn: "Zufällige Aktivität",
+        activityDisplay: "Klick auf den Button ✨",
+        newActivity: "Neue Aktivität",
+        add: "Hinzufügen",
+        allActivities: "Alle Aktivitäten (anklicken = löschen)",
+        schoolTitle: "Schulkram ✅",
+        newTodo: "Hausaufgabe / To-Do",
+        todoTitle: "To-Do Liste",
+        noActivities: "Keine Aktivitäten vorhanden."
+    },
+
+    en: {
+        title: "🌿 Relax & 📚 School by Hanife",
+        activity: "Click the button ✨",
+        relaxTitle: "Relax Activities",
+        randomBtn: "Random Activity",
+        activityDisplay: "Click the button ✨",
+        newActivity: "New Activity",
+        add: "Add",
+        allActivities: "All Activities (click to delete)",
+        schoolTitle: "School Tasks ✅",
+        newTodo: "Homework / To-Do",
+        todoTitle: "To-Do List",
+        noActivities: "No activities available."
+    },
+
+    tr: {
+        title: "🌿 Relax & 📚 Okul by Hanife",
+        activity: "Butona tıkla ✨",
+        relaxTitle: "Rahatlama Etkinlikleri",
+        randomBtn: "Rastgele Etkinlik",
+        activityDisplay: "Butona tıkla ✨",
+        newActivity: "Yeni Etkinlik",
+        add: "Ekle",
+        allActivities: "Tüm Etkinlikler (silmek için tıkla)",
+        schoolTitle: "Okul İşleri ✅",
+        newTodo: "Ödev / Yapılacaklar",
+        todoTitle: "Yapılacaklar Listesi",
+        noActivities: "Etkinlik bulunamadı."
+    }
+};
+
+function changeLanguage() {
+    const lang = document.getElementById("languageSelect").value;
+    localStorage.setItem("language", lang);
+//    beep();
+    document.getElementById("title").innerText = translations[lang].title;
+    
+    document.getElementById("activity").innerText = translations[lang].activity;
+    
+    document.getElementById("relaxTitle").innerText = translations[lang].relaxTitle;
+    document.getElementById("randomBtn").innerText = translations[lang].randomBtn;
+    document.getElementById("activityDisplay").innerText = translations[lang].activityDisplay;
+    document.getElementById("newActivity").placeholder = translations[lang].newActivity;
+    document.getElementById("addActivityBtn").innerText = translations[lang].add;
+    document.getElementById("allActivities").innerText = translations[lang].allActivities;
+    document.getElementById("schoolTitle").innerText = translations[lang].schoolTitle;
+    document.getElementById("newTodo").placeholder = translations[lang].newTodo;
+    document.getElementById("addTodoBtn").innerText = translations[lang].add;
+    document.getElementById("todoTitle").innerText = translations[lang].todoTitle;
+}
     // Entspannungsaktivitäten
     let activities = JSON.parse(localStorage.getItem("activities")) || [
         "Zeichnen",
@@ -179,8 +269,10 @@ li {
     }
 
     function showRandomActivity() {
+        
         if (activities.length === 0) {
-            document.getElementById("activityDisplay").innerText = "Keine Aktivitäten vorhanden.";
+            const lang = localStorage.getItem("language") || "de";
+document.getElementById("activityDisplay").innerText = translations[lang].noActivities;
             return;
         }
         let i = Math.floor(Math.random() * activities.length);
@@ -278,9 +370,16 @@ function toggleTheme() {
         btn.innerText = "🌙";
     }
 }
+function beep() {
+    var snd = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");  
+    snd.play();
+}
 
 // gespeicherten Modus laden
 window.onload = function () {
+    const savedLanguage = localStorage.getItem("language") || "de";
+document.getElementById("languageSelect").value = savedLanguage;
+changeLanguage();
     const savedTheme = localStorage.getItem("theme");
     const btn = document.getElementById("themeToggle");
 
@@ -297,8 +396,6 @@ window.onload = function () {
 // Ende Darkmode
 // Ende Darkmode
 
-    // Initialisierung
-   
 	
 </script>
 </body>
