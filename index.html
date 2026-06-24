@@ -228,7 +228,7 @@ li {
         const list = document.getElementById("todoList");
         list.innerHTML = "";
         todos.forEach((todo, index) => {
-            const li = document.createElement("li");
+           /* const li = document.createElement("li");
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.onclick = () => {
@@ -236,9 +236,18 @@ li {
                 saveTodos();
                 renderTodos();
             };
+            */
+            const li = document.createElement("li");
+            //const checkbox = document.createElement("input");
+            //checkbox.type = "checkbox";
+            li.onclick = () => {
+                todos.splice(index, 1);
+                saveTodos();
+                renderTodos();
+            };
             const span = document.createElement("span");
             span.textContent = todo;
-            li.appendChild(checkbox);
+            //li.appendChild(checkbox);
             li.appendChild(span);
             list.appendChild(li);
         });
